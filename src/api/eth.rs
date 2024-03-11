@@ -175,9 +175,9 @@ impl<T: Transport> Eth<T> {
     }
 
     /// Get code under given address
-    pub fn code(&self, address: Address, block: Option<BlockNumber>) -> CallFuture<Bytes, T::Out> {
+    pub fn code(&self, address: Address, block: Option<BlockId>) -> CallFuture<Bytes, T::Out> {
         let address = helpers::serialize(&address);
-        let block = helpers::serialize(&block.unwrap_or(BlockNumber::Latest));
+        let block = helpers::serialize(&block.unwrap_or_else(|| BlockNumber::Latest.into()));
 
         CallFuture::new(self.transport.execute("eth_getCode", vec![address, block]))
     }
@@ -697,7 +697,7 @@ mod tests {
     );
 
     rpc_test! (
-      Eth:code, H256::from_low_u64_be(0x123), Some(BlockNumber::Pending)
+      Eth:code, H256::from_low_u64_be(0x123), Some(BlockId::Number(BlockNumber::Pending))
       =>
       "eth_getCode", vec![r#""0x0000000000000000000000000000000000000123""#, r#""pending""#];
       Value::String("0x0123".into()) => hex!("0123")
