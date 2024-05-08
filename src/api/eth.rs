@@ -141,16 +141,8 @@ impl<T: Transport> Eth<T> {
 
     /// Get block receipts
     pub fn block_receipts(&self, block: BlockId) -> CallFuture<Option<Vec<TransactionReceipt>>, T::Out> {
-        let result = match block {
-            BlockId::Hash(hash) => {
-                let hash = helpers::serialize(&hash);
-                self.transport.execute("eth_getBlockReceipts", vec![hash])
-            }
-            BlockId::Number(num) => {
-                let num = helpers::serialize(&num);
-                self.transport.execute("eth_getBlockReceipts", vec![num])
-            }
-        };
+        let block: serde_json::Value = helpers::serialize(&block);
+        let result = self.transport.execute("eth_getBlockReceipts", vec![block]);
 
         CallFuture::new(result)
     }
@@ -521,7 +513,7 @@ mod tests {
     "status": "0x1",
     "effectiveGasPrice": "0x100"
   }"#;
-  
+
     const EXAMPLE_BLOCK_RECEIPTS: &str = r#"[{
     "transactionHash": "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238",
     "transactionIndex": "0x1",
