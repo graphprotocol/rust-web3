@@ -1,8 +1,9 @@
-pub use ethereum_types::{BigEndianHash, Bloom as H2048, H128, H160, H256, H512, H520, H64, U128, U256, U64};
+pub use ethereum_types::{Bloom as H2048, H128, H160, H256, H512, H520, H64, U128, U256, U64};
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ethereum_types::BigEndianHash;
     use wasm_bindgen_test::*;
 
     type Res = Result<U256, serde_json::Error>;
